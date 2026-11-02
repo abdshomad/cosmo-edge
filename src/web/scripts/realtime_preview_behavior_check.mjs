@@ -50,7 +50,7 @@ for (const protocol of ['httpflv', 'webrtc']) {
     },
     globals: {
       localStorage: { getItem: () => null },
-      window: { location: { hostname: 'fixture.invalid', protocol: 'http:' }, RTCPeerConnection: class {} },
+      window: { location: { hostname: 'fixture.invalid', protocol: 'http:', origin: 'http://fixture.invalid' }, RTCPeerConnection: class {} },
       setTimeout: schedule, clearTimeout: id => timers.delete(id),
       setInterval: schedule, clearInterval: id => timers.delete(id),
       console: { log() {}, warn: (...args) => assert.fail(args.join(' ')), error: (...args) => assert.fail(args.join(' ')) }

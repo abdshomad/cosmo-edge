@@ -104,8 +104,10 @@ ${INSTALLPATH}/bin/cosmo-engine
 | `18088` | `docker-compose.x86.yml` / `docker-compose.x86.windows.yml` / SRS | HTTP stream |
 | `8000` | `src/app/AppConstants.h` (`kDefaultHttpPort`) | Backend HTTP |
 | `9000` | `src/app/AppConstants.h` (`kDefaultWebSocketPort`) | Backend WebSocket |
+| `/live/` | nginx (in-container `80`) → SRS `COSMO_STREAM_HTTP_PORT` | Same-origin HTTP-FLV/HLS proxy |
+| `/rtc/` | nginx (in-container `80`) → SRS `COSMO_STREAM_RTC_API_PORT` | Same-origin WebRTC (WHEP/WHIP) proxy |
 
-`8080->80`, `1936`, `1985`, and `18088` are exposed to the host. `8000` and `9000` are in-container process ports. In `docker-compose.x86.yml`, `8000` is mapped as `8000:8000/udp` for device discovery, which is distinct from the backend HTTP (TCP). The host accesses the API through nginx, which reverse-proxies from in-container `80` to host `8080`.
+`8080->80`, `1936`, `1985`, and `18088` are exposed to the host. `8000` and `9000` are in-container process ports. In `docker-compose.x86.yml`, `8000` is mapped as `8000:8000/udp` for device discovery, which is distinct from the backend HTTP (TCP). The host accesses the API through nginx, which reverse-proxies from in-container `80` to host `8080`. The player uses same-origin `/live/` and `/rtc/` URLs (proxied by nginx to SRS), so remote access through a single-port tunnel or reverse proxy no longer needs `1985`/`18088` open.
 
 The production UDP discovery protocol accepts only `probe` queries. Network-card changes, hardware-information writes, and authorization-code operations are no longer executed over multicast: use an implemented authenticated management API, while operations without a secure replacement API are rejected.
 

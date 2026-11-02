@@ -217,6 +217,8 @@ outputs. Contact states after forced termination, power loss, or hardware failur
 | `1936` | SRS RTMP |
 | `1985` | SRS API |
 | `18088` | SRS HTTP stream |
+| `/live/` (via in-container `80`) | nginx same-origin proxy to the SRS HTTP stream; replaces direct `18088` access for single-port remote setups |
+| `/rtc/` (via in-container `80`) | nginx same-origin proxy to the SRS API; replaces direct `1985` access for single-port remote setups |
 
 ## Stream Variables
 

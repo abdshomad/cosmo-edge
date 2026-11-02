@@ -104,8 +104,10 @@ ${INSTALLPATH}/bin/cosmo-engine
 | `18088` | `docker-compose.x86.yml` / `docker-compose.x86.windows.yml` / SRS | HTTP stream |
 | `8000` | `src/app/AppConstants.h`（`kDefaultHttpPort`，TCP） | 后端 HTTP 常量（容器内监听 TCP） |
 | `9000` | `src/app/AppConstants.h`（`kDefaultWebSocketPort`，TCP） | 后端 WebSocket（容器内监听 TCP） |
+| `/live/` | nginx（容器内 `80`）→ SRS `COSMO_STREAM_HTTP_PORT` | HTTP-FLV/HLS 同源代理 |
+| `/rtc/` | nginx（容器内 `80`）→ SRS `COSMO_STREAM_RTC_API_PORT` | WebRTC（WHEP/WHIP）同源代理 |
 
-> 端口暴露说明：`8080 -> 80`、`1936`、`1985`、`18088` 是 x86 Docker 对**主机暴露**的端口。`8000`、`9000` 是容器内进程端口；其中 `8000` 在 `docker-compose.x86.yml` 中以 `8000:8000/udp` 形式映射到主机（用于设备发现等 UDP 场景），与后端 HTTP 的 TCP 监听不同。主机侧访问后端 HTTP/WebSocket API 通常经由 nginx（容器内 `80`，映射到主机 `8080`）反向代理，而不是直接访问主机的 `8000`。
+> 端口暴露说明：`8080 -> 80`、`1936`、`1985`、`18088` 是 x86 Docker 对**主机暴露**的端口。`8000`、`9000` 是容器内进程端口；其中 `8000` 在 `docker-compose.x86.yml` 中以 `8000:8000/udp` 形式映射到主机（用于设备发现等 UDP 场景），与后端 HTTP 的 TCP 监听不同。主机侧访问后端 HTTP/WebSocket API 通常经由 nginx（容器内 `80`，映射到主机 `8080`）反向代理，而不是直接访问主机的 `8000`。前端播放器使用与页面同源的 `/live/`、`/rtc/` 地址（经 nginx 代理到 SRS），因此经单端口隧道或反向代理远程访问时无需再开放 `1985`/`18088`。
 
 生产环境的 UDP 设备发现协议仅允许 `probe` 查询。修改网卡、写入硬件信息和授权码操作不再通过多播执行；只能通过已实现的身份验证管理 API 调用，尚未提供安全替代 API 的操作将被拒绝。
 

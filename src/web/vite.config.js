@@ -67,6 +67,18 @@ export default defineConfig(({ mode }) => {
           changeOrigin: true,
           secure: false,
           rewrite: (path) => path
+        },
+        '/live': {
+          target: env.VITE_APP_API_URL,
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path
+        },
+        '/rtc': {
+          target: env.VITE_APP_API_URL,
+          changeOrigin: true,
+          secure: false,
+          rewrite: (path) => path
         }
       }
     }

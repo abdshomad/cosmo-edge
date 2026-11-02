@@ -314,16 +314,18 @@ const getrequestLiveStream = async () => {
 
     activeViewerChannelId = requestedChannelId
     const stream = res.resData.stream
-    const domain = window.location.hostname
-    const streamScheme = window.location.protocol === 'https:' ? 'https' : 'http'
+    // Streams ride on the page origin through the nginx /live and /rtc proxy,
+    // so playback also works behind single-port tunnels and reverse proxies
+    // where the raw SRS ports are unreachable.
+    const origin = window.location.origin
     playbackProtocol.value = stream.protocol || 'httpflv'
     fallbackFlvUrl.value = stream.flvUrl
-      ? `${streamScheme}://${domain}:${stream.httpPort || 8080}${stream.flvUrl}`
+      ? `${origin}${stream.flvUrl}`
       : stream.url
     sourceUrl.value = stream.protocol === 'webrtc'
-      ? `${streamScheme}://${domain}:${stream.rtcApiPort || stream.port || 1985}${stream.webrtcUrl || stream.url}`
+      ? `${origin}${stream.webrtcUrl || stream.url}`
       : (stream.flvUrl || stream.url).endsWith('.flv')
-        ? `${streamScheme}://${domain}:${stream.httpPort || stream.port || 8080}${stream.flvUrl || stream.url}`
+        ? `${origin}${stream.flvUrl || stream.url}`
         : stream.url
     console.log('视频预览地址==>', sourceUrl.value)
     sendHeartBeat(stream.keepAliveInterval * 1000, stream.keepAliveUrl)

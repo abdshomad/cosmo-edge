@@ -20,6 +20,8 @@ COSMO_GB28181_ENABLED="${COSMO_GB28181_ENABLED:-off}"
 COSMO_GB28181_CANDIDATE="${COSMO_GB28181_CANDIDATE:-*}"
 COSMO_GB28181_SIP_PORT="${COSMO_GB28181_SIP_PORT:-5060}"
 COSMO_GB28181_MEDIA_PORT="${COSMO_GB28181_MEDIA_PORT:-9001}"
+COSMO_STREAM_HTTP_PORT="${COSMO_STREAM_HTTP_PORT:-18088}"
+COSMO_STREAM_RTC_API_PORT="${COSMO_STREAM_RTC_API_PORT:-1985}"
 
 
 # Upgrade signal files
@@ -115,6 +117,8 @@ render_runtime_template() {
         line="${line//@COSMO_GB28181_CANDIDATE@/${COSMO_GB28181_CANDIDATE}}"
         line="${line//@COSMO_GB28181_SIP_PORT@/${COSMO_GB28181_SIP_PORT}}"
         line="${line//@COSMO_GB28181_MEDIA_PORT@/${COSMO_GB28181_MEDIA_PORT}}"
+        line="${line//@COSMO_STREAM_HTTP_PORT@/${COSMO_STREAM_HTTP_PORT}}"
+        line="${line//@COSMO_STREAM_RTC_API_PORT@/${COSMO_STREAM_RTC_API_PORT}}"
         printf '%s\n' "$line" >>"$output_tmp"
     done <"$source_file"
     mv -f -- "$output_tmp" "$output_file"

@@ -293,15 +293,17 @@ const startProvisionalHeartbeat = (session) => {
 }
 
 const buildStreamSession = (session, stream) => {
-  const domain = window.location.hostname
-  const streamScheme = window.location.protocol === 'https:' ? 'https' : 'http'
+  // Streams ride on the page origin through the nginx /live and /rtc proxy,
+  // so playback also works behind single-port tunnels and reverse proxies
+  // where the raw SRS ports are unreachable.
+  const origin = window.location.origin
   const protocol = stream.protocol || 'httpflv'
   const fallbackUrl = stream.flvUrl
-    ? `${streamScheme}://${domain}:${stream.httpPort || 8080}${stream.flvUrl}`
-    : `${streamScheme}://${domain}:${stream.port}${stream.url}`
+    ? `${origin}${stream.flvUrl}`
+    : `${origin}${stream.url}`
   const primaryUrl = protocol === 'webrtc'
-    ? `${streamScheme}://${domain}:${stream.rtcApiPort || stream.port || 1985}${stream.webrtcUrl || stream.url}`
-    : `${streamScheme}://${domain}:${stream.httpPort || stream.port}${stream.flvUrl || stream.url}`
+    ? `${origin}${stream.webrtcUrl || stream.url}`
+    : `${origin}${stream.flvUrl || stream.url}`
 
   return {
     channelId: session.channelId,

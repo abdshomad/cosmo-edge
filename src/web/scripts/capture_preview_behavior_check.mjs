@@ -44,13 +44,13 @@ for (const library of ['workClothes', 'item']) {
       for (const [id, timer] of pending) { timers.delete(id); timer.callback() }
     }
     const document = { hidden: false, onvisibilitychange: null, documentElement: { dataset: { theme: 'light' } } }
-    const window = { location: { hostname: 'fixture.invalid', protocol: 'http:' }, RTCPeerConnection: class {} }
+    const window = { location: { hostname: 'fixture.invalid', protocol: 'http:', origin: 'http://fixture.invalid' }, RTCPeerConnection: class {} }
     const flv = {
       isSupported: () => true,
       Events: { ERROR: 'error', SCRIPTDATA_ARRIVED: 'metadata' },
       createPlayer(options) {
         assert.equal(protocol, 'httpflv')
-        assert.match(options.url, /^http:\/\/fixture\.invalid:8080\//)
+        assert.equal(options.url, 'http://fixture.invalid/fixture/live.flv')
         const listeners = new Map()
         const events = new Map()
         const player = Vue.markRaw({
@@ -86,7 +86,7 @@ for (const library of ['workClothes', 'item']) {
       '@/utils/whepPlayer': {
         createWhepPlayer(options) {
           assert.equal(protocol, 'webrtc')
-          assert.match(options.url, /^http:\/\/fixture\.invalid:1985\//)
+          assert.equal(options.url, 'http://fixture.invalid/fixture/whep')
           const player = Vue.markRaw({
             kind: 'webrtc', starts: 0, stops: 0, video: Vue.toRaw(options.video),
             start() { this.starts++; options.onConnected() },
