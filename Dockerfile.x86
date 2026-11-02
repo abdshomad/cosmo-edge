@@ -46,6 +46,7 @@ RUN sed -i 's|http://deb.debian.org/debian|https://mirrors.aliyun.com/debian|g' 
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     nginx \
+    python3 \
     iproute2 \
     libatomic1 \
     libbrotli1 \
